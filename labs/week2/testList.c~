@@ -1,0 +1,113 @@
+// testList.c - testing DLList data type
+// Written by Haowei Lou, June 2019
+
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "DLList.h"
+
+int main (void)
+{
+    printf("\nTest 1: Check newDLList is Created\n");
+    DLList myList = newDLList ();
+    assert(myList != NULL);
+    assert(DLListLength (myList) == 0);
+    validDLList(myList);
+    printf("Passed test 1 \n");
+    
+    printf("\nTest 2: Insertion in empty list\n");
+    printf("    ---Insert 'First' by Before \n");
+    DLListBefore (myList, "First");
+    printf("        ---check 'First' node become current\n");
+    assert(strcmp(DLListCurrent (myList),"First") == 0);
+    printf("    ---Delete old current and insert 'First' by After \n");
+    DLListDelete (myList);
+    DLListAfter (myList, "First");
+    printf("        ---check 'First' node become current\n");
+    printf("    ---Delete and check Nitems become 0\n");
+    DLListDelete (myList);
+    assert(DLListLength (myList) == 0);
+    validDLList(myList);
+    printf("Passed test 2 \n");
+    
+    printf("\nTest 3: Insertion\n");
+    DLListBefore (myList, "First");
+    printf("    ---insert 'First' in empty\n");
+    printf("        ---check current node is 'First'\n");
+    assert(strcmp(DLListCurrent (myList),"First") == 0);
+    printf("    ---insert 'Last' node after 'First'\n");
+    DLListAfter (myList, "Last");
+    printf("        ---check current node is 'Last'\n");
+    assert(strcmp(DLListCurrent (myList),"Last") == 0);
+    printf("    ---move next\n");
+    DLListMove (myList, 1);
+    printf("        ---check current node is still 'Last'\n");
+    assert(strcmp(DLListCurrent (myList),"Last") == 0);
+    printf("    ---move back\n");
+    DLListMove (myList, -1);
+    printf("        ---check current node is 'First'\n");
+    assert(strcmp(DLListCurrent (myList),"First") == 0);
+    printf("    ---Insert '1' after First\n");
+    DLListAfter (myList, "1");
+    printf("        ---check current node is '1'\n");
+    assert(strcmp(DLListCurrent (myList),"1") == 0);
+    printf("    ---Insert '0' before '1'\n");
+    DLListBefore (myList, "0");
+    printf("        ---check current node is '0'\n");
+    printf("    ---move back\n");
+    DLListMove (myList, -1);
+    printf("        ---check current node is 'First'\n");
+    assert(strcmp(DLListCurrent (myList),"First") == 0);
+    DLListBefore (myList, "Head");
+    printf("    ---insert 'Head' before 'First'\n");
+    printf("        ---check current node is 'Head'\n");
+    assert(strcmp(DLListCurrent (myList),"Head") == 0);
+    printf("    ---Check the nitems is 5\n");
+    assert(DLListLength (myList) == 5);
+    printf("Show output\n");
+    printf("============\n");
+    putDLList (stdout,  myList);
+    printf("============\n");
+    validDLList(myList);
+    printf("Passed test 3 \n");
+    
+    printf("\nTest 4: Delete\n");
+    printf("    ---check current node is 'Head'\n");
+    assert(strcmp(DLListCurrent (myList),"Head") == 0);
+    printf("    ---Delete current node\n");
+    DLListDelete (myList);
+    printf("        ---Check current node become its following node\n");
+    assert(strcmp(DLListCurrent (myList),"First")==0);
+    printf("    ---Move to 'Last'\n");
+    DLListMoveTo (myList, 4);
+    printf("        ---Check current is 'Last'\n");
+    assert(strcmp(DLListCurrent (myList),"Last") == 0);
+    printf("    ---Delete current node\n");
+    DLListDelete (myList);
+    printf("        ---Check current node become new lasts\n");
+    assert(strcmp(DLListCurrent (myList),"1") == 0);
+    printf("Show output\n");
+    printf("============\n");
+    putDLList (stdout,  myList);
+    printf("============\n");
+    printf("    ---Delete current node for 2 times\n");
+    DLListDelete (myList);DLListDelete (myList);
+    printf("Show output\n");
+    printf("============\n");
+    putDLList (stdout,  myList);
+    printf("============\n");
+    printf("    ---Delete last node in the list\n");
+    DLListDelete (myList);
+    printf("        ---Check the list is empty list\n");
+    assert(DLListLength(myList)== 0);
+    assert(DLListIsEmpty (myList) == 1);
+    printf("        ---Check the current is NULL\n");
+    assert(DLListCurrent (myList) == NULL);
+    printf("Passed test 4 \n");
+    
+    printf("\n\nPassed ALL test, Finish Job!!!\n");
+	freeDLList (myList);
+	return EXIT_SUCCESS;
+}

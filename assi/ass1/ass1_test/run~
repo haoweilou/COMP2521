@@ -1,0 +1,8 @@
+gcc test_Ass1.c invertedIndex.c myBST.c -lm
+./a.out
+diff mars_TfIdfList_exp.txt mars_TfIdfList.txt
+diff sun_TfIdfList_exp.txt sun_TfIdfList.txt
+diff invertedIndex.txt invertedIndex_exp.txt
+diff nasa_mars_moon.txt nasa_mars_moon_exp.txt
+rm invertedIndex.txt
+echo PASS ALL TEST

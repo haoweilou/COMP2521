@@ -1,0 +1,6 @@
+//This function will create a new empty BST
+InvertedIndexBST  CreateNewBst();
+InvertedIndexBST  NewBSTNode(char *word, char *filename);
+InvertedIndexBST  insertBSTNode(InvertedIndexBST input, InvertedIndexBST first);
+
+

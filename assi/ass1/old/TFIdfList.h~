@@ -1,0 +1,10 @@
+double  count_idf(FileList head, double total_file);
+TfIdfList CreateNewTfIdf(void);
+TfIdfList NewTfnode(char *filename, double tfidf);
+TfIdfList TfIdfListInsert(TfIdfList old, TfIdfList new);
+InvertedIndexBST searchTree(char *word, InvertedIndexBST tree);
+void showTFIdfList(TfIdfList list);
+TfIdfList mergeTwoTfIdfList(TfIdfList desti, TfIdfList from);
+void freeTfIdfList(TfIdfList desti);
+void deleteDuplicateNodes(TfIdfList node);
+reorderTfIdfList(TfIdfList node);

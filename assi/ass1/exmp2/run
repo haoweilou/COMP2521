@@ -1,0 +1,15 @@
+gcc -Wall -Werror -lm -std=c11 test_Ass1.c invertedIndex.c  myBST.c -o  test_Ass1
+time(./test_Ass1)
+diff invertedIndex.txt invertedIndex_exp.txt
+echo pass invertedIndex
+diff computer_exp.txt computer.txt
+echo pass computer
+diff database.txt database_exp.txt
+echo pass database
+diff network_computer_exp.txt network_computer.txt
+echo pass network
+diff software_security.txt software_security_exp.txt 
+diff network_exp.txt network.txt
+
+echo ALL TEST PASSED
+rm invertedIndex.txt

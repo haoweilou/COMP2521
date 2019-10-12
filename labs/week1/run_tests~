@@ -1,0 +1,20 @@
+#!/bin/sh
+./randList 50000 | sort -nr > tests/50000DupSort
+for t in 01 02 03
+
+do
+	echo === Test $t ===
+	time ./useIntList < tests/50000DupSort > useIntListout$t
+	time sort -n < tests/50000DupSort  > useSort$t
+	echo the diference is: 
+	diff useIntListout$t useSort$t
+	echo
+	
+done
+
+for t in 01 02 03
+
+do
+rm useIntListout$t
+rm useSort$t
+done

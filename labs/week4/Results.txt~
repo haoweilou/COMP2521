@@ -1,0 +1,26 @@
+Results for Tests on 5000 values
+
+Depth = depth of tree, Cost = average #comparisons per search
+
+
+             Ascending Order        Prefix Order        Random Order
+Insert
+Method       Depth      Cost     Depth      Cost     Depth      Cost
+
+L             5000      3114        13        11        28        16
+
+A             5000      1886      2954      1115        28        16
+
+R             2492       952      1774       674        27        15
+
+B              206        63        20        14        23        13
+
+S             5000         0      5000         0        31         0
+
+V               13        12        14        12        15        12
+
+
+Notes (what the above indicates):
+The cost of search is increasing as the number of depth increase. Seris who is 
+in random order needs the least search. Insertion method also influence the cost
+of search. 

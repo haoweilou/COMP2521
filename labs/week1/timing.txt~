@@ -1,0 +1,60 @@
+Input	Initial	Has	Number	AvgTime	AvgTime
+Size	Order	Dups	of runs	forusel	forsort
+5000	random	no	10	0.03sec	0.004sec
+5000	sorted	no	10	0.25sec	0.003sec
+5000	reverse	no	10	0.02sec	0.003sec
+5000	random	yes	10	0.12sec	0.003sec
+5000	sorted	yes	10	0.02sec	0.003sec
+5000	reverse	yes 10	0.01sec	0.003sec
+
+10000	random	no	10	0.44sec	0.005sec
+10000	sorted	no	10	0.04sec	0.004sec
+10000	reverse	no	10	0.02sec	0.004sec
+10000	random	yes	10	0.45sec	0.006sec
+10000	sorted	yes	10	0.03sec	0.005sec
+10000	reverse	yes	10	0.02sec	0.005sec
+
+15000	random	no	10	0.97sec	0.007sec
+15000	sorted	no	10	0.04sec	0.006sec
+15000	reverse	no	10	0.03sec	0.005sec
+15000	random	yes	10	0.97sec	0.006sec
+15000	sorted	yes	10	0.03sec	0.005sec
+15000	reverse	yes	10	0.02sec	0.006sec
+
+20000	random	no	10	1.73sec	0.008sec
+20000	sorted	no	10	0.05sec	0.006sec
+20000	reverse	no	10	0.04sec	0.005sec
+20000	random	yes	10	1.70sec	0.008sec
+20000	sorted	yes	10	0.03sec	0.007sec
+20000	reverse	yes	10	0.03sec	0.006sec
+
+50000	random	no	10	21sec	0.03sec
+50000	sorted	no	10	0.11sec	0.04sec
+50000	reverse	no	10	0.09sec	0.04sec
+50000	random	yes	10	21sec	0.06sec
+50000	sorted	yes	10	0.12sec	0.03sec
+50000	reverse	yes	10	0.15sec	0.006sec
+
+//Comment//
+It is oviously that processing time is increasing as the number of numbers
+increase. It because more numbers needs the program run more times to finish
+the sorting process, hence results in more time in sorting.
+
+The data who has duplication has relaively shorter processing time than the one 
+who has. It is because, to store duplication numbers in the exsiting link list,
+it only need to pass the number next to node who has same the new number. Which 
+is easy to approach, and less complex than random number.
+
+In both tests, the one who has reversed & sorted initial order have least time. 
+It is because these two orders is two special cases. To sort the one who has
+sorted order, the program only needs to check whether the input value is greater
+than the data in *last(obviously true in sorted order) and make the new node to 
+be the *last node. Similar with the sorted order, the reverse order is just 
+check whether the new input is smaller than the *first, and make it to be the 
+*first node.
+
+Random number required most of time, because it needs to check from start to end
+node until it find the case where input value is greater than prvious value and 
+smaller or equal to the next value. Who has most complexity and required most
+time to sort.
+

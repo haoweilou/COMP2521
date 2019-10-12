@@ -1,0 +1,77 @@
+#include<stdio.h>
+#include <ctype.h>
+#include<stdlib.h>
+#include<string.h>
+#include<math.h>
+
+#include "invertedIndex.h"
+#include "BSTree.h"
+#include "FileList.h"
+//This function will create a new empty BST
+InvertedIndexBST  CreateNewBst(char *word, char *filename) {
+    return NewBSTNode(word,filename);
+}
+
+//This function will create a new node who contain a key word
+InvertedIndexBST  NewBSTNode(char *word, char *filename) {
+    InvertedIndexBST NewBST = malloc(sizeof(NewBST)+100);
+    NewBST->word = malloc(sizeof(char)*100);
+    word = normaliseWord(word);
+    strcpy(NewBST->word,word);
+    //printf("%s ",NewBST->word);
+    NewBST->fileList = newFilenode(word,filename);
+    NewBST->left = NULL;
+    NewBST->right = NULL;
+    return NewBST;
+}
+
+
+//This function will insert the input node in appropriate place
+InvertedIndexBST insertBSTNode(InvertedIndexBST input, InvertedIndexBST BST) {
+    InvertedIndexBST curr = BST;
+    InvertedIndexBST prev = BST;
+    if(curr == NULL) {
+        BST = input;
+        return BST;
+    }
+    while(curr != NULL) {
+        prev = curr;
+        if(strcmp(input->word,curr->word) < 0) {
+            curr = curr -> left;
+            prev->left = (curr == NULL)? input : prev->left;
+        } else if (strcmp(input->word,curr->word) == 0) {
+            insertFilenode(curr, input);
+            free(input);
+            return BST;
+        } else {
+            curr = curr -> right;
+            prev->right = (curr == NULL)? input : prev->right;
+        }
+    }
+    return BST;
+}
+
+//This function will count the number of word in files
+double count_tf(char *word, char *filename) {
+    double number = 0;
+    double total = 0;
+    FILE *f = fopen(filename,"r");
+    char *temp = malloc(sizeof(char)*100);
+    while(fscanf(f, "%s", temp) != EOF) {
+        int same = 1;
+        for(int i = 0; word[i] != '\0'; i++) {
+            if(word[i] != temp[i] && word[i] != tolower(temp[i])){
+                same = 0;
+                break;
+            }
+        }
+        number = (same == 1)?number+1:number;
+        total++;
+    }
+    fclose(f);
+    free(temp);
+    //printf("%s's total number is: %d\n",filename,number);
+    //printf("%s frequency number is: %d\n",word,number);
+    double result = number/total;
+    return result;
+}

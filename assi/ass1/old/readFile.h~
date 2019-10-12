@@ -1,0 +1,46 @@
+//This function checks the number of character in a given file
+int countNumberOfchars(char *input) {
+    int number = 0;
+    char temp; 
+    while(scanf("%c", &temp) != EOF)
+        number++;
+    return number;
+}
+//This function checks the number of files in the collection file
+/*int countNumberOffiles(char *input, int size) {
+    //FILE *f = fopen(input,"r");
+    char txt[5] = ".txt";
+    //char *text = malloc(sizeof(char)*size);
+    int times = 0;
+    
+    for(int i = 0; i < size; i++)
+        scanf(f, "%c", &text[i]);
+    char check[5] = {0};
+    for(int i = 0; i < size; i++) {
+        check[0] = text[i];
+        check[1] = text[i+1];   
+        check[2] = text[i+2];
+        check[3] = text[i+3];
+        if(strcmp(check,txt) == 0){
+            times++;
+        }
+    }
+    free(text);
+    fclose(f);
+    return times;
+}*/
+//char * storefile(char *input){
+
+  //  return unsorted;
+//}
+
+//G
+/*struct FileListNode FileLists(int num,char *Filename){
+    struct FileListNode *new = malloc(sizeof(struct FileListNode));
+    FILE *f = fopen(input,"r");
+    for(int i = 0; i < num; i++) {
+        
+    }
+    return new;
+}*/
+

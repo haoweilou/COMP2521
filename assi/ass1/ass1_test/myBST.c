@@ -1,0 +1,227 @@
+#include<stdio.h>
+#include <ctype.h>
+#include<stdlib.h>
+#include<string.h>
+#include<math.h>
+
+#include "invertedIndex.h"
+#include "myBST.h"
+
+
+//This function will create a new node who contain a key word
+InvertedIndexBST  NewBSTNode(char *word, char *filename) {
+    InvertedIndexBST NewBST = malloc(sizeof(NewBST)+100);
+    NewBST->word = malloc(100);
+    word = normaliseWord(word);
+    strcpy(NewBST->word,word);
+    NewBST->fileList = newFilenode(word,filename);
+    NewBST->left = NULL;
+    NewBST->right = NULL;
+    return NewBST;
+}
+
+
+//This function will insert the input node in appropriate place
+InvertedIndexBST insertBSTNode(InvertedIndexBST input, InvertedIndexBST root) {
+    InvertedIndexBST curr = root;
+
+    if (root == NULL) return input;
+	if (strcmp(input->word,curr->word) == 0) insertFilenode(curr, input);
+	else if (strcmp(input->word,curr->word) < 0) curr->left  = insertBSTNode(input, curr->left);
+	else if (strcmp(input->word,curr->word) > 0) curr->right = insertBSTNode (input, curr->right);
+
+	int dL = BSTdepth (root->left);
+	int dR = BSTdepth (root->right);
+	if ((dL - dR) > 1) root = Rotateright(root);
+	if ((dR - dL) > 1) root = Rotateleft(root);
+	return root;
+}
+
+//This function will count the tf value
+double count_tf(char *word, char *filename) {
+    double number = 0;
+    double total = 0;
+    FILE *f = fopen(filename,"r");
+    char *temp = malloc(sizeof(char)*100);
+    while(fscanf(f, "%s", temp) != EOF) {
+        normaliseWord(temp);
+        if(strcmp(word,temp) == 0) number++;
+        total++;
+    }
+    fclose(f);
+    return number/total;
+}
+//This function will create a new filelist node
+FileList newFilenode(char *word, char *filename){
+    FileList node = malloc(sizeof(FileList)+100);
+    node->filename = malloc(sizeof(char)*100);
+    strcpy(node->filename, filename);
+    node->next = NULL;
+    node->tf = count_tf(word,filename);
+    return node;
+}
+//This function will insert the Filenode from one BST node to other 
+void insertFilenode(InvertedIndexBST desti, InvertedIndexBST from){
+    if(desti == NULL) desti = from;
+    FileList curr = desti->fileList;
+    FileList new = from->fileList;
+    FileList prev = NULL;
+    char *inputname = new->filename;
+    while(curr != NULL) {
+        if(strcmp(inputname,curr->filename)<0) {
+            if(prev == NULL) {
+                new->next = curr;
+                desti->fileList = new;
+            } else {
+                prev->next = new;
+                new->next = curr;
+            }
+            break;
+        }
+        if(strcmp(inputname,curr->filename) == 0)break;
+        prev = curr;
+        curr = curr->next;
+        prev->next = (curr == NULL)? new:prev->next;
+    }
+}
+// this function will count the idf number of a given word
+double  count_idf(FileList head, double total_file) {
+    double contain = 0;
+    for(FileList temp = head; temp != NULL; temp=temp->next)contain++;
+    return log(total_file/contain)/log(10);
+}
+// this function will create a new tfidf node
+TfIdfList NewTfnode(char *filename, double tfidf){
+    TfIdfList new = malloc(sizeof(TfIdfList)+100);
+    new->filename = malloc(100);
+    strcpy(new->filename, filename);
+    new->tfidf_sum = tfidf;
+    new->next = NULL;
+    return new;
+}
+//insert Tf node into appropriate place
+TfIdfList TfIdfListInsert(TfIdfList old, TfIdfList new) {
+    if(old == NULL) {
+        old = new;
+        return old;
+    }
+    TfIdfList prev = NULL;
+    for(TfIdfList curr = old; curr!=NULL; curr = curr->next) {
+        if(new->tfidf_sum > curr->tfidf_sum) {
+            if(prev == NULL) {
+                new->next = old;
+                old = new;
+            } else {
+                prev->next = new;
+                new->next = curr;
+            }break;
+        }else if(new->tfidf_sum == curr->tfidf_sum) {
+            if(strcmp(new->filename, curr->filename) < 0){
+                if(prev == NULL) {
+                    new->next = old;
+                    old = new;  
+                } else {
+                    prev->next = new;
+                    new->next = curr;
+                }
+                break;
+            } else if (strcmp(new->filename, curr->filename) == 0) {
+                curr->tfidf_sum += new->tfidf_sum;
+                break;
+            }
+        }
+        prev = curr;
+        if(prev->next == NULL) {
+            prev->next = new;
+            break;
+        }
+    }
+    return old;
+}
+//find the BST node who has same word
+InvertedIndexBST searchTree(char *word, InvertedIndexBST tree) {
+    InvertedIndexBST temp = tree;
+    while(temp != NULL && strcmp(word, temp->word) != 0) {
+        if(strcmp(word, temp->word) > 0) temp = temp->right;
+        else if(strcmp(word, temp->word) < 0) temp = temp->left;
+    }
+    return temp;
+}
+//merge two tf list together
+TfIdfList mergeTwoTfIdfList(TfIdfList desti, TfIdfList from) {
+    TfIdfList prev = NULL;
+    for(TfIdfList temp = desti; temp != NULL;) {
+        prev = temp;
+        temp = temp->next;
+    }
+    prev->next = from;
+    return desti;
+}
+//free tflist
+void freeTfIdfList(TfIdfList desti) {
+    TfIdfList prev = NULL;
+    for(TfIdfList temp = desti; temp != NULL; temp = temp->next) {
+        free(prev);
+        prev = temp;
+    }
+    free(prev);
+}
+//delete duplicate nodes who has same filename and add their tfidf_sum together
+void deleteDuplicateNodes(TfIdfList node) {
+    for(TfIdfList curr1 = node; curr1 != NULL; curr1 = curr1->next) {
+        TfIdfList prev2 = curr1;
+        TfIdfList curr2 = curr1;
+        TfIdfList next2 = curr2;
+        while(curr2 != NULL) {
+            if(strcmp(curr1->filename, curr2->filename) == 0){
+                if(curr1 != curr2){
+                    curr1->tfidf_sum += curr2->tfidf_sum;
+                    prev2->next = next2;
+                    free(curr2);
+                    curr2 = next2;
+                    if(curr2 != NULL)next2 = curr2->next;
+                    continue;  
+                }
+            }
+            prev2 = curr2;
+            curr2 = curr2->next;
+            if(curr2 == NULL)break;
+            next2 = curr2->next;
+        }
+    }
+}
+//sort the tfidf list again
+TfIdfList reorderTfIdfList(TfIdfList node) {
+    TfIdfList new, temp = NULL;
+    for(TfIdfList curr = node; curr != NULL; curr = curr->next) {
+        free(temp);
+        TfIdfList newnode = NewTfnode(curr->filename,curr->tfidf_sum);
+        new = TfIdfListInsert(new, newnode);
+        temp = curr;
+    }
+    return new;
+}
+//rotate right
+InvertedIndexBST Rotateleft(InvertedIndexBST root) {
+    if (root == NULL) return NULL;
+	InvertedIndexBST right = root->right;   
+	if (right == NULL) return root;
+	root->right = right->left;
+	right->left = root;
+	return right;
+}
+//rotate right
+InvertedIndexBST Rotateright(InvertedIndexBST root) {
+    if (root == NULL) return NULL;
+	InvertedIndexBST left = root->left;   
+	if (left == NULL) return root;
+	root->left = left->right;
+	left->right = root;
+	return left;
+}
+//calculate depth of tree
+int BSTdepth(InvertedIndexBST root) {
+    if(root == NULL) return 1; 
+    if(BSTdepth(root->left) > BSTdepth(root->right)) return 1 + BSTdepth(root->left);
+    else return 1 + BSTdepth(root->right);
+}
